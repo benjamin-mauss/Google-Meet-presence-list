@@ -28,11 +28,12 @@ function verify_users(){
 
     // avoid problems while we wait for loading
     if(!updated_users.length){ 
-        let el = document.getElementsByClassName("r6xAKc")[1].children[0].children[0]
-        if(el){
-            el.click()
+        let el = document.getElementsByClassName("r6xAKc")
+        if(el.length){
+            let el2 = el[1].children[0].children[0]
+            el2.click()
             setTimeout(()=>{
-                el.click()
+                el2.click()
             }, 500)
         }
         return
