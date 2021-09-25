@@ -137,7 +137,7 @@ class presence_list{
             let i = all_usernames.indexOf(updated_username)
             
             if(i === -1){ // if don't find it in the array all_usernames, it means that it is new user
-                console.log("A new user has entered " + updated_username)
+                // console.log("A new user has entered: " + updated_username)
                 this.add_user({
                     "name":updated_username,
                     "present": true,
