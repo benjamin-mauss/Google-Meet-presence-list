@@ -367,7 +367,7 @@ class export_presence_list {
 
     }
 
-    JSON(){
+    JSON(sort_type){
         google_meet_presence_list.update_users_states()
         let user_list = google_meet_presence_list.get_all_users()
         if(!this.check_users(user_list)){
