@@ -31,8 +31,7 @@ class presence_list{
 
     get_updated_users(){
         return document.querySelectorAll('[jsmodel="cZWlhe QUjYIe"]')
-        
-        
+         
     }
 
     get_updated_usernames(updated_users){ // updated_users = get_updated_users()
@@ -71,7 +70,7 @@ class presence_list{
         return false
     }
 
-    update_users_states(automatic){
+    update_users_states(automatic=false){
         
         // it is called every X seconds and it updates the users array
         let updated_users = this.get_updated_users()
@@ -100,9 +99,9 @@ class presence_list{
             return
         }
         
-        if(updated_users.length == 1 && !this.get_all_users().length){ 
-            return // console.log("Just you")
-        }
+        // if(updated_users.length == 1 && !this.get_all_users().length){ 
+        //     return // console.log("Just you")
+        // }
 
         let current_time = this.get_time()
         let all_users = this.get_all_users()
