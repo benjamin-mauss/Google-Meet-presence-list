@@ -1,11 +1,7 @@
 // // @ts-check
 
-// TODO: BUTTON TO EXPORT PRESENCE LIST
 // TODO: A USER COULD BE VERIFIED BY THEIR data-participant-id
-
-// Looks like a valid id
-// data-participant-id has a different ID every meet?
-// I guess it does
+// TODO: 'SORT BY' OPTION TO THE EXPORT
 
 class user_data{
     constructor(name, present, last_time_present){
@@ -34,15 +30,17 @@ class presence_list{
     }
 
     get_updated_users(){
-        return document.querySelectorAll('[jsmodel="cZWlhe QUjYIe"]')[0].firstElementChild.children[1].firstElementChild.firstElementChild
+        return document.querySelectorAll('[jsmodel="cZWlhe QUjYIe"]')
+        
+        
     }
 
     get_updated_usernames(updated_users){ // updated_users = get_updated_users()
         // popullating updated_names
-        console.log(updated_users)
+        
         let updated_names = []
         for (let x=0;x<updated_users.length;x++){ 
-            updated_names[x] =updated_users[x].textContent
+            updated_names[x] = updated_users[x].firstElementChild.children[1].firstElementChild.firstElementChild.textContent
         }
         return updated_names
     }
@@ -186,7 +184,7 @@ class presence_list{
         let button_content = await this.get_storaged_file("button.html")
         let popup_content = await this.get_storaged_file("popup.html")
         let style_content = await this.get_storaged_file("style.css")
-                
+        
         insert_point.insertAdjacentHTML('beforebegin',this.escapeHTMLPolicy.createHTML(`
         <!-- Start of Google Meet Presence List extension -->
             <!-- Start of Button -->
@@ -215,6 +213,7 @@ class presence_list{
 
         openModalButtons.forEach(button => {
         button.addEventListener('click', () => {
+            export_presence.update_preview()
             const modal = document.querySelector(button.dataset.modalTarget)
             openModal(modal)
         })
@@ -236,14 +235,14 @@ class presence_list{
 
         function openModal(modal) {
         if (modal == null) return
-        modal.classList.add('active')
-        overlay.classList.add('active')
+            modal.classList.add('active')
+            overlay.classList.add('active')
         }
 
         function closeModal(modal) {
         if (modal == null) return
-        modal.classList.remove('active')
-        overlay.classList.remove('active')
+            modal.classList.remove('active')
+            overlay.classList.remove('active')
         }
 
         document.getElementById("exportToTEXT").addEventListener('click', () => {
@@ -267,6 +266,7 @@ class presence_list{
         
 }
 
+// I an repeating too much code, I should fix that
 class export_presence_list {
     TEXT(){
         google_meet_presence_list.update_users_states()
@@ -358,9 +358,35 @@ class export_presence_list {
         this.downloadFile(lines, "presence_list.csv", "text/csv") 
 
     }
-    // XLS(){
+    update_preview(sort_type){ // creates/updates preview html
+        
+        document.getElementById("table_preview").innerHTML = google_meet_presence_list.escapeHTMLPolicy.createHTML(
+        `<table id="table_preview">
+            <tr id="header-table">
+                <th>Name</th>
+                <th>Entry time</th>
+                <th>Spent time</th>
+            </tr>
+        </table>`)
+        let html = ""
 
-    // }
+        google_meet_presence_list.update_users_states()
+        let user_list = google_meet_presence_list.get_all_users()
+
+        // sort(user_list)
+
+        for(let x=0;x<user_list.length;x++){
+            html +=
+            `<tr>
+                <td class="item_preview">${user_list[x]["name"]}</td>
+                <td class="item_preview">${user_list[x]["entry_time"]}</td>
+                <td class="item_preview">${user_list[x]["last_time_present"]}</td>
+            </tr>`
+        }
+
+        document.getElementById("header-table").insertAdjacentHTML("afterend",google_meet_presence_list.escapeHTMLPolicy.createHTML(html))
+    }
+
     JSON(){
         google_meet_presence_list.update_users_states()
         let user_list = google_meet_presence_list.get_all_users()
