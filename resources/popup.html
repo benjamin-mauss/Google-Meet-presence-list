@@ -1,0 +1,22 @@
+
+<!-- https://github.com/WebDevSimplified/Vanilla-JavaScript-Modal/ -->
+<div class="modal" id="modal">
+    <div class="modal-header">
+    <div class="title">Export presence list</div>
+    <button data-close-button class="close-button">&times;</button>
+    </div>
+    <div class="modal-body">
+    <input type="checkbox" name="options" id="name" checked> Name<br>
+    <input type="checkbox" name="options" id="entry_time" checked> Entry time<br>
+    <input type="checkbox" name="options" id="last_time" checked> Last time<br>
+    <input type="checkbox" name="options" id="spent_time" checked> Spent time<br>
+    <!--<input type="checkbox" name="options" value="spent_time" checked> Time spent<br>-->
+    <br>
+    <button id="exportToTEXT">Export as TEXT</button>
+    <button id="exportToJSON">Export as JSON</button>
+    <!--<button id="exportToXLS">Export as EXCEL</button>-->
+    <button id="exportToCSV">Export as CSV</button>
+    <p id="message"></p>
+    </div>
+</div>
+<div id="overlay"></div>
