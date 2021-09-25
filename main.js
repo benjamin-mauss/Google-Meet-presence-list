@@ -20,10 +20,19 @@ class presence_list{
     constructor(){
         this.users = []
 
-        // this is necessary to avoid CSP errors
-        this.escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
-            createHTML: (to_escape) => to_escape
-        })
+        if(typeof trustedTypes === "undefined"){
+            // I am doint that just to avoid rewrite some code :p
+            this.escapeHTMLPolicy = {
+                createHTML(input){
+                    return input
+                }
+            }
+        }else{
+            this.escapeHTMLPolicy = trustedTypes.createPolicy("forceInner", {
+                createHTML: (to_escape) => to_escape
+            })
+        }
+        
     }
 
     get_time(){
@@ -171,7 +180,15 @@ class presence_list{
     }
 
     async get_storaged_file(filename){
-        let response = await fetch(chrome.runtime.getURL("resources/" + filename))
+        let b
+        if(navigator.userAgent.indexOf("Chrome") !== -1 ){
+            b = chrome
+        }else if(navigator.userAgent.indexOf("Firefox") !== -1 ){
+            b = browser
+        }else{
+            b = chrome
+        }
+        let response = await fetch(b.runtime.getURL("resources/" + filename))
         let r = await response.text()
         return r
     }
