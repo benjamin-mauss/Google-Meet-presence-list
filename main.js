@@ -1,7 +1,9 @@
 // // @ts-check
 
-// TODO?: A USER COULD BE VERIFIED BY THEIR data-participant-id
-// TODO?: 'SORT BY' OPTION TO THE EXPORT
+// IDEA: A USER COULD BE VERIFIED BY THEIR data-participant-id
+// IDEA: 'SORT BY' OPTION TO THE EXPORT
+// IDEA: BUTTON TO OPEN OPTIONS. CONFIG time_between_updates AND OTHER COOL STUFFS
+// IDEA: USER CAN CONFIG A AUTO EXPORTER (AFTER X MINUTOS IT WILL EXPORT THE PRESENCE LIST)
 
 class user_data{
     constructor(name, present, last_time_present){
