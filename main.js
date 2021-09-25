@@ -1,7 +1,7 @@
 // // @ts-check
 
-// TODO: A USER COULD BE VERIFIED BY THEIR data-participant-id
-// TODO: 'SORT BY' OPTION TO THE EXPORT
+// TODO?: A USER COULD BE VERIFIED BY THEIR data-participant-id
+// TODO?: 'SORT BY' OPTION TO THE EXPORT
 
 class user_data{
     constructor(name, present, last_time_present){
@@ -212,25 +212,25 @@ class presence_list{
         const overlay = document.getElementById('overlay')
 
         openModalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            export_presence.update_preview()
-            const modal = document.querySelector(button.dataset.modalTarget)
-            openModal(modal)
-        })
+            button.addEventListener('click', () => {
+                export_presence.update_preview(document.getElementById("asc").checked?1:-1)
+                const modal = document.querySelector(button.dataset.modalTarget)
+                openModal(modal)
+            })
         })
 
         overlay.addEventListener('click', () => {
-        const modals = document.querySelectorAll('.modal.active')
-        modals.forEach(modal => {
-            closeModal(modal)
-        })
+            const modals = document.querySelectorAll('.modal.active')
+            modals.forEach(modal => {
+                closeModal(modal)
+            })
         })
 
         closeModalButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const modal = button.closest('.modal')
-            closeModal(modal)
-        })
+            button.addEventListener('click', () => {
+                const modal = button.closest('.modal')
+                closeModal(modal)
+            })
         })
 
         function openModal(modal) {
@@ -238,7 +238,7 @@ class presence_list{
             modal.classList.add('active')
             overlay.classList.add('active')
         }
-
+        
         function closeModal(modal) {
         if (modal == null) return
             modal.classList.remove('active')
@@ -246,19 +246,23 @@ class presence_list{
         }
 
         document.getElementById("exportToTEXT").addEventListener('click', () => {
-            export_presence.TEXT()
+            export_presence.TEXT(document.getElementById("asc").checked?1:-1)
         })
-        // document.getElementById("exportToXLS").addEventListener('click', () => {
-        //     export_presence.XLS()
-        // })
         document.getElementById("exportToJSON").addEventListener('click', () => {
-            export_presence.JSON()
+            export_presence.JSON(document.getElementById("asc").checked?1:-1)
         })
         document.getElementById("exportToCSV").addEventListener('click', () => {
-            export_presence.CSV()
+            export_presence.CSV(document.getElementById("asc").checked?1:-1)
         })
 
 
+        document.getElementById("asc").addEventListener('click', () => {
+            export_presence.update_preview(document.getElementById("asc").checked?1:-1)
+        })
+
+        document.getElementById("desc").addEventListener('click', () => {
+            export_presence.update_preview(document.getElementById("asc").checked?1:-1)
+        })
 
 
 
@@ -266,9 +270,9 @@ class presence_list{
         
 }
 
-// I an repeating too much code, I should fix that
+// I am repeating too much code, I should fix that
 class export_presence_list {
-    TEXT(){
+    TEXT(sort_type){
         google_meet_presence_list.update_users_states()
         let user_list = google_meet_presence_list.get_all_users()
         // console.log(user_list)
@@ -279,6 +283,7 @@ class export_presence_list {
         let lines = ""
         
         if(document.getElementById("name").checked){
+            user_list = this.sort_user_list(user_list, sort_type)
             lines += "name,"
         }
         if(document.getElementById("entry_time").checked){
@@ -314,7 +319,7 @@ class export_presence_list {
 
     }
    
-    CSV(){
+    CSV(sort_type){
         google_meet_presence_list.update_users_states()
         let user_list = google_meet_presence_list.get_all_users()
         // console.log(user_list)
@@ -325,6 +330,8 @@ class export_presence_list {
         let lines = ""
         
         if(document.getElementById("name").checked){
+            user_list = this.sort_user_list(user_list, sort_type)
+            
             lines += "name,"
         }
         if(document.getElementById("entry_time").checked){
@@ -358,34 +365,6 @@ class export_presence_list {
         this.downloadFile(lines, "presence_list.csv", "text/csv") 
 
     }
-    update_preview(sort_type){ // creates/updates preview html
-        
-        document.getElementById("table_preview").innerHTML = google_meet_presence_list.escapeHTMLPolicy.createHTML(
-        `<table id="table_preview">
-            <tr id="header-table">
-                <th>Name</th>
-                <th>Entry time</th>
-                <th>Spent time</th>
-            </tr>
-        </table>`)
-        let html = ""
-
-        google_meet_presence_list.update_users_states()
-        let user_list = google_meet_presence_list.get_all_users()
-
-        // sort(user_list)
-
-        for(let x=0;x<user_list.length;x++){
-            html +=
-            `<tr>
-                <td class="item_preview">${user_list[x]["name"]}</td>
-                <td class="item_preview">${user_list[x]["entry_time"]}</td>
-                <td class="item_preview">${user_list[x]["last_time_present"]}</td>
-            </tr>`
-        }
-
-        document.getElementById("header-table").insertAdjacentHTML("afterend",google_meet_presence_list.escapeHTMLPolicy.createHTML(html))
-    }
 
     JSON(){
         google_meet_presence_list.update_users_states()
@@ -412,15 +391,66 @@ class export_presence_list {
             // console.log(tmp)
             user_list_output.push(tmp)
         }
+        if(user_list_output[0]["name"]){
+            user_list_output = this.sort_user_list(user_list_output, sort_type)
+        }
         
         this.downloadFile(JSON.stringify(user_list_output, null, 2), "presence_list.json", "application/json")
     }
-    
-    check_users(user_list){
+
+
+    update_preview(sort_type){ // creates/updates preview html
         
-        if(!user_list.length){
-            // console.log("No one besider you")
-            let m = document.getElementById("message")
+        document.getElementById("table_preview").innerHTML = google_meet_presence_list.escapeHTMLPolicy.createHTML(
+            `<table id="table_preview">
+            <tr id="header-table">
+            <th>Name</th>
+            <th>Entry time</th>
+            <th>Last time present</th>
+            </tr>
+            </table>`)
+            let html = ""
+            
+            google_meet_presence_list.update_users_states()
+            let user_list = google_meet_presence_list.get_all_users()
+            if(user_list[0]["name"]){
+                user_list = this.sort_user_list(user_list, sort_type)
+            }
+            
+            for(let x=0;x<user_list.length;x++){
+                html +=
+                `<tr>
+                <td class="item_preview">${user_list[x]["name"]}</td>
+                <td class="item_preview">${user_list[x]["entry_time"]}</td>
+                <td class="item_preview">${user_list[x]["last_time_present"]}</td>
+                </tr>`
+            }
+            
+            document.getElementById("header-table").insertAdjacentHTML("afterend",google_meet_presence_list.escapeHTMLPolicy.createHTML(html))
+    }
+
+    sort_user_list(user_list, sort_type=1){
+        // sorting by name
+        // For some reason, sort() didn't work, so I made my own algorithm, altought it could be faster
+        // if you don't understand, google toLocaleLowerCase, localeCompare and sort algorithms
+        for(let i = 0; i < user_list.length; i++){
+            for(let j = i; j < user_list.length; j++){
+        
+                if(user_list[i]["name"].toLocaleLowerCase().localeCompare(user_list[j]["name"].toLocaleLowerCase()) === sort_type){
+                    let old = user_list[i]
+                    user_list[i] = user_list[j]
+                    user_list[j] = old
+                }
+            }   
+        }
+        return user_list
+    }
+
+    check_users(user_list){
+            
+            if(!user_list.length){
+                // console.log("No one besider you")
+                let m = document.getElementById("message")
             m.innerText = "There is no one, besides yourself, in this room"
             setTimeout((m) => {
                 // console.log(m)

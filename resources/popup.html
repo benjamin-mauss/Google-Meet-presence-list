@@ -19,13 +19,18 @@
         </div>
         <br>
         <div id="checks">
-            <div class="check"><input type="checkbox" name="options" id="name" checked> Name</div>
-            <div class="check"><input type="checkbox" name="options" id="entry_time" checked> Entry time</div>
-            <div class="check"><input type="checkbox" name="options" id="last_time" checked> Last time</div>
-            <div class="check"><input type="checkbox" name="options" id="spent_time" checked> Spent time</div>
+            
+            <div class="check"><input type="checkbox" name="options" id="name" checked><label for="name"> Name</label></div>
+            <div class="check"><input type="checkbox" name="options" id="entry_time" checked><label for="entry_time"> Entry time</label></div>
+            <div class="check"><input type="checkbox" name="options" id="last_time" checked><label for="last_time"> Last time</label></div>
+            <div class="check"><input type="checkbox" name="options" id="spent_time" checked><label for="spent_time"> Spent time</label></div>
         </div>
         <!--<input type="checkbox" name="options" value="spent_time" checked> Time spent<br>-->
-        
+        <div id="sort_order">
+            Sort Order:
+            <div class="check"><input type="radio" name="sort" id="asc" checked><label for="asc"> Asc</label></div>
+            <div class="check"><input type="radio" name="sort" id="desc"><label for="desc"> Desc</label></div>
+        </div>
         <br>
         <button id="exportToTEXT">Export as TEXT</button>
         <button id="exportToJSON">Export as JSON</button>
